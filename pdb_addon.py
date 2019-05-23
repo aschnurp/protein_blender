@@ -4,7 +4,7 @@ bl_info = {
 }
 
 import bpy
-
+import datetime
 
 class DrawSphere(bpy.types.Operator):
     """My Sphere Drawing Script"""
@@ -13,7 +13,11 @@ class DrawSphere(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("C:/Users/Seide/OneDrive/Documents/Studium/Biotechnologie Bachelor/Sommersemester 19/Problemorientierte Programmierung/PyCharm/protein_blender/test.txt", "r")
+        file = open("test.txt", "r")
+        dictionary = {}
+        count = 1
+
+        print(datetime.datetime.now())
         for line in file:
             if (line.startswith("ENDMDL") or line.startswith("TER")):
                 break
@@ -22,9 +26,15 @@ class DrawSphere(bpy.types.Operator):
                 x = float(line[30:38])
                 y = float(line[38:46])
                 z = float(line[46:54])
-                bpy.ops.mesh.primitive_uv_sphere_add(segments=32, ring_count=16, size=1.0, calc_uvs=False, view_align=False,
-                                             enter_editmode=False, location=(x, y, z), rotation=(0.0, 0.0, 0.0))
+                dictionary[count] = (x,y,z)
+                count = count + 1
+        print(datetime.datetime.now())
         file.close()
+
+        for i in range(1,count):
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=8, ring_count=4, size=1.0, calc_uvs=False, view_align=False,
+                                                 enter_editmode=False, location=(dictionary[i]), rotation=(0.0, 0.0, 0.0))
+        print(datetime.datetime.now())
 
         return {'FINISHED'}
 
