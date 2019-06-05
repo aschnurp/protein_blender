@@ -13,7 +13,7 @@ class DrawSphere(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("test.txt", "r")
+        file = open("text.txt", "r")
         dictionary = {}
         count = 1
 
@@ -37,6 +37,46 @@ class DrawSphere(bpy.types.Operator):
         print(datetime.datetime.now())
 
         return {'FINISHED'}
+
+###### Panel aka Menu
+class ObjectSelectPanel(bpy.types.Panel):
+    bl_idname = "OBJECT_PT_Protein Blender"
+    bl_label = "Protein Blender"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return (context.object is not None)
+
+    def draw_header(self, context):
+        layout = self.layout
+        obj = context.object
+        layout.prop(obj, "select", text="")
+
+    def draw(self, context):
+        layout = self.layout
+
+        obj = context.object
+        row = layout.row()
+        row.prop(obj, "hide_select")
+        row.prop(obj, "hide_render")
+
+        rd = context.scene.render
+        layout.prop(rd, "filepath", text="PDB file")
+
+
+        box = layout.box()
+        box.label("Selection Tools")
+        box.operator("object.select_all").action = 'TOGGLE'
+        row = box.row()
+        row.operator("object.select_all").action = 'INVERT'
+        row.operator("object.select_random")
+
+
+bpy.utils.register_class(ObjectSelectPanel)
 
 def register():
     bpy.utils.register_class(DrawSphere)
