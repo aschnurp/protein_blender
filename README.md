@@ -11,6 +11,7 @@ Das Addon kann unter:
  File -> User Preferences -> Add-ons -> Install Add-on from File...
  
  in dem entsprechenden Verzeichnis installiert werden.
- Um es zu Aktivieren muss es in der Suchleiste unter "ProteinBlender" gesucht und anschließend mit in dem Kästchen angekreuzt werden.
-   
+ Um es zu Aktivieren muss es in der Suchleiste unter "ProteinBlender" gesucht und anschließend in dem Kästchen angekreuzt werden.
+
+Das Addon ist im _Object Panel_ zu finden und kann von da gesteuert werden. 
  
