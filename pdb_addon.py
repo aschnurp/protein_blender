@@ -13,8 +13,8 @@ class DrawSphere(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("test.txt", "r")
-        dictionary = {}
+        file = open("C:/Users/Seide/OneDrive/Documents/Studium/Biotechnologie Bachelor/Sommersemester 19/Problemorientierte Programmierung/PyCharm/protein_blender/test.txt", "r")
+        liste = []
         count = 1
 
         print(datetime.datetime.now())
@@ -26,14 +26,30 @@ class DrawSphere(bpy.types.Operator):
                 x = float(line[30:38])
                 y = float(line[38:46])
                 z = float(line[46:54])
-                dictionary[count] = (x,y,z)
+                if atomname.startswith(" C"):
+                    scale = 1.7
+                elif atomname.startswith(" O"):
+                    scale = 1.52
+                elif atomname.startswith(" N"):
+                    scale = 1.55
+                elif atomname.startswith(" S"):
+                    scale = 1.8
+                else:
+                    scale = 1
+                atomcoordinaten = (x,y,z)
+                tupel = (atomname, x,y,z ,scale, atomcoordinaten)
+                liste.append(tupel)
+                print(tupel)
                 count = count + 1
         print(datetime.datetime.now())
         file.close()
 
-        for i in range(1,count):
-            bpy.ops.mesh.primitive_uv_sphere_add(segments=8, ring_count=4, size=1.0, calc_uvs=False, view_align=False,
-                                                 enter_editmode=False, location=(dictionary[i]), rotation=(0.0, 0.0, 0.0))
+        for i in range(1, count - 1):
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=liste[i][4], calc_uvs=False, view_align=False,
+                                                 enter_editmode=False, location=(liste[i][5]),
+                                                 rotation=(0.0, 0.0, 0.0))
+
+
         print(datetime.datetime.now())
 
         return {'FINISHED'}
