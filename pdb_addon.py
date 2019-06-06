@@ -17,9 +17,12 @@ class DrawSphere(bpy.types.Operator):
         liste = []
         count = 1
 
+        # create dictionary with atomnames and scales
         dictionary_atom = {"C" : 1.7, "O" : 1.52, "N" : 1.55, "S" : 1.8}
 
         print(datetime.datetime.now())
+
+        # read file
         for line in file:
             if (line.startswith("ENDMDL") or line.startswith("TER")):
                 break
@@ -36,13 +39,19 @@ class DrawSphere(bpy.types.Operator):
         print(datetime.datetime.now())
         file.close()
 
+        # create material with color
+        mat = bpy.data.materials.new("Diffuse BSDF")
+        mat.diffuse_color = (float(.5), 0.0, 1.0)
+
+        # create spheres with material and color
         for i in range(1, count - 1):
             scale = dictionary_atom.get(liste[i][0][1])
             print(scale)
             bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False, view_align=False,
                                                  enter_editmode=False, location=(liste[i][4]),
                                                  rotation=(0.0, 0.0, 0.0))
-
+            object = bpy.context.selected_objects[0]
+            object.active_material = mat
 
         print(datetime.datetime.now())
 
