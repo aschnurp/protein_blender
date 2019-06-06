@@ -40,8 +40,12 @@ class DrawSphere(bpy.types.Operator):
         file.close()
 
         # create material with color
-        mat = bpy.data.materials.new("Diffuse BSDF")
-        mat.diffuse_color = (float(.5), 0.0, 1.0)
+        mat1 = bpy.data.materials.new("Diffuse BSDF")
+        mat1.diffuse_color = (float(0.5), 0.0, 1.0)
+        mat2 = bpy.data.materials.new("Diffuse BSDF")
+        mat2.diffuse_color = (float(1.0), 0.0, 0.0)
+        mat3 = bpy.data.materials.new("Diffuse BSDF")
+        mat3.diffuse_color = (float(0.0), 1.0, 1.0)
 
         # create spheres with material and color
         for i in range(1, count - 1):
@@ -50,8 +54,15 @@ class DrawSphere(bpy.types.Operator):
             bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False, view_align=False,
                                                  enter_editmode=False, location=(liste[i][4]),
                                                  rotation=(0.0, 0.0, 0.0))
-            object = bpy.context.selected_objects[0]
-            object.active_material = mat
+            if liste[i][0][1] == "C":
+                object = bpy.context.selected_objects[0]
+                object.active_material = mat1
+            elif liste[i][0][1] == "N":
+                object = bpy.context.selected_objects[0]
+                object.active_material = mat2
+            else:
+                object = bpy.context.selected_objects[0]
+                object.active_material = mat3
 
         print(datetime.datetime.now())
 
