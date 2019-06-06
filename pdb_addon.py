@@ -13,9 +13,11 @@ class DrawSphere(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("test.txt", "r")
+        file = open("C:/Users/Seide/OneDrive/Documents/Studium/Biotechnologie Bachelor/Sommersemester 19/Problemorientierte Programmierung/PyCharm/protein_blender/test.txt", "r")
         liste = []
         count = 1
+
+        dictionary_atom = {"C" : 1.7, "O" : 1.52, "N" : 1.55, "S" : 1.8}
 
         print(datetime.datetime.now())
         for line in file:
@@ -26,18 +28,8 @@ class DrawSphere(bpy.types.Operator):
                 x = float(line[30:38])
                 y = float(line[38:46])
                 z = float(line[46:54])
-                if atomname.startswith(" C"):
-                    scale = 1.7
-                elif atomname.startswith(" O"):
-                    scale = 1.52
-                elif atomname.startswith(" N"):
-                    scale = 1.55
-                elif atomname.startswith(" S"):
-                    scale = 1.8
-                else:
-                    scale = 1
                 atomcoordinaten = (x,y,z)
-                tupel = (atomname, x,y,z ,scale, atomcoordinaten)
+                tupel = (atomname, x,y,z , atomcoordinaten)
                 liste.append(tupel)
                 print(tupel)
                 count = count + 1
@@ -45,8 +37,10 @@ class DrawSphere(bpy.types.Operator):
         file.close()
 
         for i in range(1, count - 1):
-            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=liste[i][4], calc_uvs=False, view_align=False,
-                                                 enter_editmode=False, location=(liste[i][5]),
+            scale = dictionary_atom.get(liste[i][0][1])
+            print(scale)
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False, view_align=False,
+                                                 enter_editmode=False, location=(liste[i][4]),
                                                  rotation=(0.0, 0.0, 0.0))
 
 
