@@ -14,11 +14,23 @@ class DrawSphere(bpy.types.Operator):
 
     def execute(self, context):
         file = open("C:/Users/Seide/OneDrive/Documents/Studium/Biotechnologie Bachelor/Sommersemester 19/Problemorientierte Programmierung/PyCharm/protein_blender/test.txt", "r")
-        liste = []
+        list = []
         count = 1
 
-        # create dictionary with atomnames and scales
-        dictionary_atom = {"C" : 1.7, "O" : 1.52, "N" : 1.55, "S" : 1.8}
+        # create material with color
+        mat1 = bpy.data.materials.new("Diffuse BSDF")
+        mat1.diffuse_color = (float(0.0), 0.0, 0.0) # black
+        mat2 = bpy.data.materials.new("Diffuse BSDF")
+        mat2.diffuse_color = (float(1.0), 0.0, 0.0) # red
+        mat3 = bpy.data.materials.new("Diffuse BSDF")
+        mat3.diffuse_color = (float(0.1), 0.5, 0.8) # blue
+        mat4 = bpy.data.materials.new("Diffuse BSDF")
+        mat4.diffuse_color = (float(0.9), 1.0, 0.0) # yellow
+
+        # create dictionary with atom names and scales
+        # dictionary_atom = {"C" : (1.7, mat1), "O" : (1.52, mat2), "N" : (1.55, mat3),"S" : (1.8, mat4)}
+        dictionary_atom = {"C": 1.7, "O": 1.52, "N": 1.55, "S": 1.8}
+        dictionary_atom_color = {"C": mat1, "O": mat2, "N": mat3, "S": mat4}
 
         print(datetime.datetime.now())
 
@@ -33,88 +45,53 @@ class DrawSphere(bpy.types.Operator):
                 z = float(line[46:54])
                 atomcoordinaten = (x,y,z)
                 tupel = (atomname, x,y,z , atomcoordinaten)
-                liste.append(tupel)
+                list.append(tupel)
                 print(tupel)
                 count = count + 1
         print(datetime.datetime.now())
         file.close()
 
-        # create material with color
-        mat1 = bpy.data.materials.new("Diffuse BSDF")
-        mat1.diffuse_color = (float(0.5), 0.0, 1.0)
-        mat2 = bpy.data.materials.new("Diffuse BSDF")
-        mat2.diffuse_color = (float(1.0), 0.0, 0.0)
-        mat3 = bpy.data.materials.new("Diffuse BSDF")
-        mat3.diffuse_color = (float(0.0), 1.0, 1.0)
-
         # create spheres with material and color
         for i in range(1, count - 1):
-            scale = dictionary_atom.get(liste[i][0][1])
+            scale = dictionary_atom.get(list[i][0][1])
             print(scale)
-            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False, view_align=False,
-                                                 enter_editmode=False, location=(liste[i][4]),
-                                                 rotation=(0.0, 0.0, 0.0))
-            if liste[i][0][1] == "C":
-                object = bpy.context.selected_objects[0]
-                object.active_material = mat1
-            elif liste[i][0][1] == "N":
-                object = bpy.context.selected_objects[0]
-                object.active_material = mat2
-            else:
-                object = bpy.context.selected_objects[0]
-                object.active_material = mat3
+            color = dictionary_atom_color.get(list[i][0][1])
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, size=scale, calc_uvs=False, view_align=False,
+                                                 enter_editmode=False, location=(list[i][1], list[i][2], list[i][3]), rotation=(0.0, 0.0, 0.0))
+
+            object = bpy.context.selected_objects[0]
+            object.active_material = color
+
+            for poly in bpy.context.object.data.polygons:
+                poly.use_smooth = True
 
         print(datetime.datetime.now())
-
         return {'FINISHED'}
 
 ###### Panel aka Menu
-class ObjectSelectPanel(bpy.types.Panel):
-    bl_idname = "OBJECT_PT_Protein Blender"
+class CreateProteinPanel(bpy.types.Panel):
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
     bl_label = "Protein Blender"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "object"
-    bl_options = {'DEFAULT_CLOSED'}
+    bl_context = 'objectmode'
+    bl_category = "Protein Blender"
 
-    @classmethod
-    def poll(cls, context):
-        return (context.object is not None)
-
-    def draw_header(self, context):
-        layout = self.layout
-        obj = context.object
-        layout.prop(obj, "select", text="")
-
+    #Draw the Panel
     def draw(self, context):
         layout = self.layout
-
-        obj = context.object
-        row = layout.row()
-        row.prop(obj, "hide_select")
-        row.prop(obj, "hide_render")
-
-        rd = context.scene.render
-        layout.prop(rd, "filepath", text="PDB file")
+        layout.operator("object.create_sphere", text="Draw Protein") # assign a function to the button
 
 
-        box = layout.box()
-        box.label("Selection Tools")
-        box.operator("object.select_all").action = 'TOGGLE'
-        row = box.row()
-        row.operator("object.select_all").action = 'INVERT'
-        row.operator("object.select_random")
-
-
-bpy.utils.register_class(ObjectSelectPanel)
+#####Register
+# register the panel
+bpy.utils.register_class(CreateProteinPanel)
 
 def register():
+    bpy.utils.register_class(OT_TestOpenFilebrowser)
     bpy.utils.register_class(DrawSphere)
-
-
 def unregister():
+    bpy.utils.unregister_class(OT_TestOpenFilebrowser)
     bpy.utils.unregister_class(DrawSphere)
-
 
 if __name__ == "__main__":
     register()
