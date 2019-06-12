@@ -3,15 +3,19 @@
 In Blender v2.79 soll ein Addon eingebunden werden, welches die Visualisierung von Proteinstrukturen aus PDB-Datein ermöglicht.
 
 
-##Addon installieren
+##Installation
 
 Um das Addon verwenden zu können wird Blender v2.79 benötigt.
 Das Addon kann unter:
  
- File -> User Preferences -> Add-ons -> Install Add-on from File...
+ __File -> User Preferences -> Add-ons -> Install Add-on from File...__
  
  in dem entsprechenden Verzeichnis installiert werden.
  Um es zu Aktivieren muss es in der Suchleiste unter "ProteinBlender" gesucht und anschließend in dem Kästchen angekreuzt werden.
 
-Das Addon ist im _Object Panel_ zu finden und kann von da gesteuert werden. 
+##Benutzeroberfläche
+
+Das Addon ist links im _3D Panel_ zu finden und kann von da gesteuert werden.
+
+ 
  
