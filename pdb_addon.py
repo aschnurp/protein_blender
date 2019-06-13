@@ -6,14 +6,25 @@ bl_info = {
 import bpy
 import datetime
 
-class DrawSphere(bpy.types.Operator):
+
+from bpy_extras.io_utils import ImportHelper
+from bpy.types import Operator
+
+# class OT_TestOpenFilebrowser(Operator, ImportHelper):
+#     bl_idname = "test.open_filebrowser"
+#     bl_label = "Open the file browser (yay)"
+#     def execute(self, context):
+#         """Do something with the selected file(s)."""
+#         return {'FINISHED'}
+
+class DrawSphere(bpy.types.Operator, ImportHelper):
     """My Sphere Drawing Script"""
     bl_idname = "object.create_sphere"
     bl_label = "ProteinBlender"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("test.txt", "r")
+        file = self.filepath
         list = []
         count = 1
 
@@ -49,7 +60,7 @@ class DrawSphere(bpy.types.Operator):
                 print(tupel)
                 count = count + 1
         print(datetime.datetime.now())
-        file.close()
+        #file.close()
 
         # create spheres with material and color
         for i in range(1, count - 1):
@@ -79,7 +90,49 @@ class CreateProteinPanel(bpy.types.Panel):
     #Draw the Panel
     def draw(self, context):
         layout = self.layout
-        layout.operator("object.create_sphere", text="Draw Protein") # assign a function to the button
+        col = layout.column(align=True)
+
+        col.operator("object.create_sphere", text="Draw Protein") # assign a function to the button
+
+        # col.operator("test.open_filebrowser", text="filebrowser")  # assign a function to the button
+
+
+
+
+
+
+
+
+# class AddCube(bpy.types.Operator):
+#     bl_idname = "mesh.add_cube"
+#     bl_label = "Add Cube"
+#     bl_options = {'REGISTER', 'UNDO'}
+#     def execute(self, context):
+#         bpy.ops.mesh.primitive_cube_add()
+
+
+
+
+
+############################################################
+#Baustelle#
+############################################################
+
+#### neuer Header ####
+
+# class AddCubePanel(bpy.types.Panel):
+#     bl_space_type = 'VIEW_3D'
+#     bl_region_type = 'TOOLS'
+#     bl_label = "Add Cube"
+#     bl_context = 'objectmode'
+#     bl_category = "Protein Blender"
+#
+#     def draw(self, context):
+#         layout = self.layout
+#         col = layout.column(align=True)
+#         col.operator("mesh.primitive_cube_add", text="Add Cube")  # assign a function to the button
+
+
 
 
 #####Register
@@ -88,8 +141,13 @@ bpy.utils.register_class(CreateProteinPanel)
 
 def register():
     bpy.utils.register_class(DrawSphere)
+    #bpy.utils.register_class(OT_TestOpenFilebrowser)
+
+
 def unregister():
     bpy.utils.unregister_class(DrawSphere)
+    #bpy.utils.unregister_class(OT_TestOpenFilebrowser)
+
 
 if __name__ == "__main__":
     register()
