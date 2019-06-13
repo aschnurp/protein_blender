@@ -13,7 +13,7 @@ class DrawSphere(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("C:/Users/Seide/OneDrive/Documents/Studium/Biotechnologie Bachelor/Sommersemester 19/Problemorientierte Programmierung/PyCharm/protein_blender/test.txt", "r")
+        file = open("test.txt", "r")
         list = []
         count = 1
 
@@ -87,10 +87,8 @@ class CreateProteinPanel(bpy.types.Panel):
 bpy.utils.register_class(CreateProteinPanel)
 
 def register():
-    bpy.utils.register_class(OT_TestOpenFilebrowser)
     bpy.utils.register_class(DrawSphere)
 def unregister():
-    bpy.utils.unregister_class(OT_TestOpenFilebrowser)
     bpy.utils.unregister_class(DrawSphere)
 
 if __name__ == "__main__":
