@@ -7,15 +7,12 @@ import bpy
 import datetime
 
 class DrawSphere(bpy.types.Operator):
-    """My Sphere Drawing Script"""
     bl_idname = "object.create_sphere"
     bl_label = "ProteinBlender"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        file = open("test.txt", "r")
-        list = []
-        count = 1
+        filename = "C:/Users/Seide/OneDrive/Documents/Studium/Biotechnologie Bachelor/Sommersemester 19/Problemorientierte Programmierung/PyCharm/protein_blender/test.txt"
 
         # create material with color
         mat1 = bpy.data.materials.new("Diffuse BSDF")
@@ -34,30 +31,14 @@ class DrawSphere(bpy.types.Operator):
 
         print(datetime.datetime.now())
 
-        # read file
-        for line in file:
-            if (line.startswith("ENDMDL") or line.startswith("TER")):
-                break
-            if line.startswith("ATOM"):
-                atomname = line[12:16]
-                x = float(line[30:38])
-                y = float(line[38:46])
-                z = float(line[46:54])
-                atomcoordinaten = (x,y,z)
-                tupel = (atomname, x,y,z , atomcoordinaten)
-                list.append(tupel)
-                print(tupel)
-                count = count + 1
-        print(datetime.datetime.now())
-        file.close()
+        count, pdb_list = read_pdb_file(filename)
 
         # create spheres with material and color
-        for i in range(1, count - 1):
-            scale = dictionary_atom.get(list[i][0][1])
-            print(scale)
-            color = dictionary_atom_color.get(list[i][0][1])
-            bpy.ops.mesh.primitive_uv_sphere_add(segments=24, ring_count=12, size=scale, calc_uvs=False, view_align=False,
-                                                 enter_editmode=False, location=(list[i][1], list[i][2], list[i][3]), rotation=(0.0, 0.0, 0.0))
+        for i in range(0, count):
+            scale = dictionary_atom.get(pdb_list[i][0][1])
+            color = dictionary_atom_color.get(pdb_list[i][0][1])
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False, view_align=False,
+                                                 enter_editmode=False, location=(pdb_list[i][1], pdb_list[i][2], pdb_list[i][3]), rotation=(0.0, 0.0, 0.0))
 
             object = bpy.context.selected_objects[0]
             object.active_material = color
@@ -68,6 +49,7 @@ class DrawSphere(bpy.types.Operator):
         print(datetime.datetime.now())
         return {'FINISHED'}
 
+
 ###### Panel aka Menu
 class CreateProteinPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
@@ -76,7 +58,7 @@ class CreateProteinPanel(bpy.types.Panel):
     bl_context = 'objectmode'
     bl_category = "Protein Blender"
 
-    #Draw the Panel
+    # draw the Panel
     def draw(self, context):
         layout = self.layout
         layout.operator("object.create_sphere", text="Draw Protein") # assign a function to the button
@@ -88,8 +70,29 @@ bpy.utils.register_class(CreateProteinPanel)
 
 def register():
     bpy.utils.register_class(DrawSphere)
+
 def unregister():
     bpy.utils.unregister_class(DrawSphere)
+
+def read_pdb_file(filename):
+    # read file
+    file = open(filename, "r")
+    pdb_list = []
+    for line in file:
+        if (line.startswith("ENDMDL") or line.startswith("TER")):
+            break
+        if line.startswith("ATOM"):
+            atomname = line[12:16]
+            x = float(line[30:38])
+            y = float(line[38:46])
+            z = float(line[46:54])
+            atomcoordinaten = (x, y, z)
+            tupel = (atomname, x, y, z, atomcoordinaten)
+            pdb_list.append(tupel)
+    print(datetime.datetime.now())
+    file.close()
+    count = len(pdb_list)
+    return count, pdb_list
 
 if __name__ == "__main__":
     register()
