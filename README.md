@@ -36,12 +36,17 @@ Es existieren zwei Optionen:
 Wird der __Draw Protein Button__ oder der __Draw Protein Button__ betätigt, so öffnet sich ein File Brwoser und das gewünschte 
 PDB File kann ausgewält werden.
 
-Protein Blender nun liest nun das PDB File aus und Zeichnet für jedes Atom eine Kugel in der 
-Größe seines Van der Waals Radiuses und färbt ihn anschließend in den üblichen Farben ein.
+Protein Blender liest nun das PDB File aus und zeichnet für jedes Atom eine Kugel in der 
+Größe seines Van der Waals Radiuses und färbt sie anschließend in den üblichen Farben ein.
+
++ C - Schwarz
++ N - Blau
++ O - Rot
++ S - Gelb
 
 __Achtung: Besitzt das Protein mehr als 1000 Atome rechnet das Programm 1 Minute und 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Länger!__
 
- Wurde ein Protein Gezeichnet, so sollte vor der erneuten Betätigung das alte Protein gelöscht werden 
+ Wurde ein Protein gezeichnet, so sollte vor der erneuten Betätigung das alte Protein gelöscht werden 
  um Überschneidungen zu vermeiden.
  
