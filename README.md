@@ -44,6 +44,7 @@ Größe seines Van der Waals Radiuses und färbt sie anschließend in den üblic
 + O - Rot
 + S - Gelb
 
+
 __Achtung: Besitzt das Protein mehr als 1000 Atome rechnet das Programm 1 Minute und 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Länger!__
 
