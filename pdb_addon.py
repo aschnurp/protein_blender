@@ -19,9 +19,8 @@ def read_pdb_file(filename):
             x = float(line[30:38])
             y = float(line[38:46])
             z = float(line[46:54])
-            atomcoordinaten = (x, y, z)
-            tupel = (atomname, x, y, z, atomcoordinaten)
-            pdb_list.append(tupel)
+            atom_coordinates = (atomname, x, y, z)
+            pdb_list.append(atom_coordinates)
     print(datetime.datetime.now())
     file.close()
     count = len(pdb_list)
@@ -62,8 +61,8 @@ class DrawSphere(bpy.types.Operator, ImportHelper):
         for atom in range(0, count):
             scale = dictionary_atom_scales.get(pdb_list[atom][0][1])
             color = dictionary_atom_color.get(pdb_list[atom][0][1])
-            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False, view_align=False,
-                                                 enter_editmode=False, location=(pdb_list[atom][1], pdb_list[atom][2], pdb_list[atom][3]), rotation=(0.0, 0.0, 0.0))
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale,
+                                                 location=(pdb_list[atom][1], pdb_list[atom][2], pdb_list[atom][3]))
 
             object = bpy.context.selected_objects[0]
             object.active_material = color
@@ -92,11 +91,8 @@ class DrawBackbone(bpy.types.Operator, ImportHelper):
             color = dictionary_atom_color.get(pdb_list[atom][0][1])
             if pdb_list[atom][0] == " CA " or pdb_list[atom][0] == " N  " or pdb_list[atom][0] == " C  ":
                 print(pdb_list[atom][0])
-                bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale, calc_uvs=False,
-                                                     view_align=False,
-                                                     enter_editmode=False,
-                                                     location=(pdb_list[atom][1], pdb_list[atom][2], pdb_list[atom][3]),
-                                                     rotation=(0.0, 0.0, 0.0))
+                bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=scale,
+                                                     location=(pdb_list[atom][1], pdb_list[atom][2], pdb_list[atom][3]))
                 object = bpy.context.selected_objects[0]
                 object.active_material = color
             else:
