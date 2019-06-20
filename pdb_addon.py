@@ -6,6 +6,7 @@ bl_info = {
 import bpy
 import datetime
 from bpy_extras.io_utils import ImportHelper
+from math import sqrt, acos, atan2
 
 #read file
 def read_pdb_file(filename):
@@ -114,6 +115,57 @@ class DrawBackbone(bpy.types.Operator, ImportHelper):
                 pass
         return {'FINISHED'}
 
+class DrawCylinder(bpy.types.Operator, ImportHelper):
+    bl_idname = "object.create_cylinder"
+    bl_label = "load pdb file"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self,context):
+
+        mat1, mat2, mat3, mat4, dictionary_atom_color = material_colors()
+
+        count, pdb_list = read_pdb_file(self.filepath)
+        backbone_list = []
+        for atom in range(0, len(pdb_list)):
+            if pdb_list[atom][0] == " CA " or pdb_list[atom][0] == " N  " or pdb_list[atom][0] == " C  ":
+                print(pdb_list[atom][0])
+                atomname = pdb_list[atom][0]
+                x = pdb_list[atom][1]
+                y = pdb_list[atom][2]
+                z = pdb_list[atom][3]
+                coordinates = (atomname, x, y, z)
+                backbone_list.append(coordinates)
+            else:
+                pass
+
+        for i in range(1, len(backbone_list)):
+            color = dictionary_atom_color.get(backbone_list[i][0][1])
+            bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=0.5, location=(backbone_list[i][1], backbone_list[i][2], backbone_list[i][3]))
+            object = bpy.context.selected_objects[0]
+            object.active_material = color
+
+            if i < len(backbone_list):
+                dx = backbone_list[i - 1][1] - backbone_list[i][1]
+                dy = backbone_list[i - 1][2] - backbone_list[i][2]
+                dz = backbone_list[i - 1][3] - backbone_list[i][3]
+                dist = sqrt(dx ** 2 + dy ** 2 + dz ** 2)
+
+                phi = atan2(dy, dx)
+                theta = acos(dz / dist)
+                x = dx / 2 + backbone_list[i][1]
+                y = dy / 2 + backbone_list[i][2]
+                z = dz / 2 + backbone_list[i][3]
+                print(x, y, z)
+
+                bpy.ops.mesh.primitive_cylinder_add(radius=0.2, location=(x, y, z))
+
+                bpy.context.object.rotation_euler[1] = theta
+                bpy.context.object.rotation_euler[2] = phi
+            else:
+                pass
+        return {'FINISHED'}
+
+
 
 ###### Panel aka Menu
 class CreateProteinPanel(bpy.types.Panel):
@@ -128,6 +180,7 @@ class CreateProteinPanel(bpy.types.Panel):
         layout = self.layout
         layout.operator("object.create_sphere", text="Draw Protein") # assign a function to the button
         layout.operator("object.create_backbone", text="Draw Backbone")
+        layout.operator("object.create_cylinder", text="Draw Backbone with Bonds")
 
 
 #####Register
@@ -137,10 +190,12 @@ bpy.utils.register_class(CreateProteinPanel)
 def register():
     bpy.utils.register_class(DrawSphere)
     bpy.utils.register_class(DrawBackbone)
+    bpy.utils.register_class(DrawCylinder)
 
 def unregister():
     bpy.utils.unregister_class(DrawSphere)
     bpy.utils.unregister_class(DrawBackbone)
+    bpy.utils.unregister_class(DrawCylinder)
 
 if __name__ == "__main__":
     register()
