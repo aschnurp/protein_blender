@@ -10,7 +10,9 @@ from bpy_extras.io_utils import ImportHelper
 #read file
 def read_pdb_file(filename):
     file = open(filename, "r")
+    pdb_list_coordinates = []
     pdb_list = []
+    x_list, y_list, z_list = [], [], []
     for line in file:
         if (line.startswith("ENDMDL") or line.startswith("TER")):
             break
@@ -19,11 +21,24 @@ def read_pdb_file(filename):
             x = float(line[30:38])
             y = float(line[38:46])
             z = float(line[46:54])
+            x_list.append(x)
+            y_list.append(y)
+            z_list.append(z)
             atom_coordinates = (atomname, x, y, z)
-            pdb_list.append(atom_coordinates)
+            pdb_list_coordinates.append(atom_coordinates)
+    count = len(pdb_list_coordinates)
+    Cx = 1 / count * sum(x_list)
+    Cy = 1 / count * sum(y_list)
+    Cz = 1 / count * sum(z_list)
+    for i in range(0,count):
+        x0 = x_list[i] - Cx
+        y0 = y_list[i] - Cy
+        z0 = z_list[i] - Cz
+        atomname = pdb_list_coordinates[i][0]
+        centroid_coordinates = (atomname, x0, y0, z0)
+        pdb_list.append(centroid_coordinates)
     print(datetime.datetime.now())
     file.close()
-    count = len(pdb_list)
     return count, pdb_list
 
 # create material with color
