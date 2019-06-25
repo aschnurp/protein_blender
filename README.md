@@ -26,14 +26,15 @@ Addon in Blender unter:
 
 Das Addon ist nun links im _3D Panel_ zu finden und kann von da gesteuert werden. 
 
-Es existieren zwei Optionen:
+Es existieren drei Optionen um das gewünschte Protein Darzustellen:
 
-+ Zeichnen des gewünschten Proteins mithilfe des __Draw Protein__ Buttons
-+ Zeichnen der Backbone des Proteins durch den __Draw Backbone__ Button
++ Protein mit Van der Walls Radius --> __Draw Protein__ Button
++ Zeichnen der Backbone ohne Bonds --> __Draw Backbone__ Button
++ Zeichnen der Backbone mit Bonds --> __Draw Backbone__ Button
 
 ## Funktionsweise
 
-Wird der __Draw Protein Button__ oder der __Draw Protein Button__ betätigt, so öffnet sich ein File Brwoser und das gewünschte 
+Wird einer der Buttons betätigt, so öffnet sich ein File Brwoser und das gewünschte 
 PDB File kann ausgewählt werden.
 
 Protein Blender liest nun das PDB File aus und zeichnet für jedes Atom eine Kugel in der 
@@ -44,9 +45,7 @@ Größe seines Van der Waals Radiuses und färbt sie anschließend in den üblic
 + O - Rot
 + S - Gelb
 
-
 __Achtung: Besitzt das Protein mehr als 1000 Atome rechnet das Programm 1 Minute und Länger!__
 
- Wurde ein Protein gezeichnet, so sollte vor der erneuten Betätigung das alte Protein gelöscht werden 
- um Überschneidungen zu vermeiden.
- 
+ Wurde ein Protein gezeichnet, so sollte vor der erneuten Betätigung das alte Protein gelöscht 
+ werden um Überschneidungen zu vermeiden.

@@ -42,7 +42,7 @@ def read_pdb_file(filename):
     file.close()
     return count, pdb_list
 
-# create material with color
+# create a material with a color
 def material_colors():
     mat1 = bpy.data.materials.new("Diffuse BSDF")
     mat1.diffuse_color = (float(0.0), 0.0, 0.0)  # black
@@ -60,7 +60,7 @@ def atom_scales():
     dictionary_atom = {"C": 1.7, "O": 1.52, "N": 1.55, "S": 1.8}
     return dictionary_atom
 
-
+#adds a class to draw the whole Protein
 class DrawSphere(bpy.types.Operator, ImportHelper):
     bl_idname = "object.create_sphere"
     bl_label = "load pdb file"
@@ -89,14 +89,13 @@ class DrawSphere(bpy.types.Operator, ImportHelper):
         print(datetime.datetime.now())
         return {'FINISHED'}
 
-
+#adds a class to draw the Backbone only with atoms
 class DrawBackbone(bpy.types.Operator, ImportHelper):
     bl_idname = "object.create_backbone"
     bl_label = "load pdb file"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self,context):
-
         mat1, mat2, mat3, mat4, dictionary_atom_color = material_colors()
         dictionary_atom_scales = atom_scales()
 
@@ -115,15 +114,18 @@ class DrawBackbone(bpy.types.Operator, ImportHelper):
                 pass
         return {'FINISHED'}
 
+#adds a class to draw the Backbone with bonds and atoms
 class DrawCylinder(bpy.types.Operator, ImportHelper):
     bl_idname = "object.create_cylinder"
     bl_label = "load pdb file"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self,context):
-
         mat1, mat2, mat3, mat4, dictionary_atom_color = material_colors()
+        mat5 = bpy.data.materials.new("Diffuse BSDF")
+        mat5.diffuse_color = (float(0.7), 0.7, 0.7)  # white
 
+        # creats a list of all backbone atoms
         count, pdb_list = read_pdb_file(self.filepath)
         backbone_list = []
         for atom in range(0, len(pdb_list)):
@@ -137,14 +139,14 @@ class DrawCylinder(bpy.types.Operator, ImportHelper):
                 backbone_list.append(coordinates)
             else:
                 pass
-
-        for i in range(1, len(backbone_list)):
+        #use this list to draw spheres (atoms) and cylinder (bonds)
+        for i in range(0, len(backbone_list)):
             color = dictionary_atom_color.get(backbone_list[i][0][1])
             bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, size=0.5, location=(backbone_list[i][1], backbone_list[i][2], backbone_list[i][3]))
             object = bpy.context.selected_objects[0]
             object.active_material = color
 
-            if i < len(backbone_list):
+            if 0 < i < len(backbone_list):
                 dx = backbone_list[i - 1][1] - backbone_list[i][1]
                 dy = backbone_list[i - 1][2] - backbone_list[i][2]
                 dz = backbone_list[i - 1][3] - backbone_list[i][3]
@@ -157,17 +159,19 @@ class DrawCylinder(bpy.types.Operator, ImportHelper):
                 z = dz / 2 + backbone_list[i][3]
                 print(x, y, z)
 
-                bpy.ops.mesh.primitive_cylinder_add(radius=0.2, location=(x, y, z))
+                # Add cylindes to display the "bonds"
+                bpy.ops.mesh.primitive_cylinder_add(radius=0.2, location=(x, y, z), depth=dist)
 
                 bpy.context.object.rotation_euler[1] = theta
                 bpy.context.object.rotation_euler[2] = phi
+
+                object = bpy.context.selected_objects[0]
+                object.active_material = mat5
             else:
                 pass
         return {'FINISHED'}
 
-
-
-###### Panel aka Menu
+# Panel aka Menu
 class CreateProteinPanel(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -175,18 +179,19 @@ class CreateProteinPanel(bpy.types.Panel):
     bl_context = 'objectmode'
     bl_category = "Protein Blender"
 
-    # draw the Panel
+    # draw the Panel and the Buttons
     def draw(self, context):
         layout = self.layout
-        layout.operator("object.create_sphere", text="Draw Protein") # assign a function to the button
+        layout.operator("object.create_sphere", text="Draw Protein")
         layout.operator("object.create_backbone", text="Draw Backbone")
         layout.operator("object.create_cylinder", text="Draw Backbone with Bonds")
 
 
-#####Register
+#Register
 # register the panel
 bpy.utils.register_class(CreateProteinPanel)
 
+# register the functions
 def register():
     bpy.utils.register_class(DrawSphere)
     bpy.utils.register_class(DrawBackbone)
